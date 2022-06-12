@@ -16,6 +16,7 @@ import {
   isUpCommand,
   isLsCommand,
   isExitCommand,
+  isAppCommand,
 } from "./app/utils/files.js";
 import {
   isEolCommand,
@@ -24,7 +25,7 @@ import {
   isUserNameCommand,
   isArchitectureCommand,
 } from "./app/utils/os.js";
-import { getFiles } from "./app/files/index.js";
+import { getAppPath, getFiles } from "./app/files/index.js";
 import { upPath, cdPath } from "./app/folders/index.js";
 import {
   addFile,
@@ -121,6 +122,10 @@ const init = () => {
         break;
       case isDecompressCommand(chunk):
         decompressFile(home.start, chunk);
+        break;
+      case isAppCommand(chunk):
+        home.start = getAppPath(home.start);
+        console.log(` ✶ ✷ ✸ You are currently in ${home.start} ✶ ✷ ✸`);
         break;
       default:
         console.log("Invalid input");

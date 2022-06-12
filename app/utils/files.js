@@ -36,3 +36,7 @@ export const isLsCommand = (chunk) => {
 export const isExitCommand = (chunk) => {
   return chunk.slice(0, 5) === ".exit";
 };
+
+export const isAppCommand = (chunk) => {
+  return chunk === "app";
+};
