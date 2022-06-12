@@ -14,6 +14,7 @@ export const calculateHash = async (dir, chunk) => {
       hashSum.update(fileBuffer);
       const hex = hashSum.digest("hex");
       console.log(hex);
+      console.log("Successfully. ");
     } else {
       console.log(
         "Operation failed, relative path. Use file name from ls command list, please"

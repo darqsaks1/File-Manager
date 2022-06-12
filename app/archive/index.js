@@ -25,6 +25,7 @@ export const compressFile = async (dir, chunk) => {
         path.join(res.substring(0, res.length - 1), `${archive[0]}.gz`)
       );
       stream.pipe(zlib.createGzip()).pipe(write);
+      console.log("Successfully");
     } else {
       console.log(
         "Operation failed. You can get file name from ls command list. Relative path. Path for destination - absolute  Ex: /Users/artemstatuta/Desktop/Work/ NODE_BASIC_RS/File-Manager/"
@@ -60,9 +61,12 @@ export const decompressFile = async (dir, chunk) => {
         path.join(res.substring(0, res.length - 1), `${archive[0]}.txt`)
       );
       stream.pipe(zlib.createUnzip()).pipe(write);
+      console.log("Successfully");
     } else {
       console.log(
-        "Operation failed. You can get file name from ls command list. Relative path. File must be with .gz. Path for destination - absolute  Ex: /Users/artemstatuta/Desktop/Work/ NODE_BASIC_RS/File-Manager/"
+        `Operation failed. You can get file name from ls command list. 
+         Relative path. File must be with .gz.
+         Path for destination - absolute  Ex: /Users/artemstatuta/Desktop/Work/ NODE_BASIC_RS/File-Manager/`
       );
     }
     console.log(` ✶ ✷ ✸ ✶ ✷ ✸ You are currently in ${dir} ✶ ✷ ✸ ✶ ✷ ✸`);

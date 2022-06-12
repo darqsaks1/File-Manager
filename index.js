@@ -1,5 +1,10 @@
 import { stdin, argv } from "process";
-import { getUserName, onRebuildChunk } from "./app/utils/index.js";
+import {
+  exitCommand,
+  getSettings,
+  getUserName,
+  onRebuildChunk,
+} from "./app/utils/index.js";
 import {
   isCdCommand,
   isCatCommand,
@@ -45,97 +50,84 @@ const init = () => {
   const home = { start: process.env.HOME };
 
   const userName = getUserName(argv);
-
-  console.log(`Welcome to the File Manager, ${userName}!`);
-  console.log(` ✶ ✷ ✸ You are currently in ${home.start} ✶ ✷ ✸`);
+  getSettings(userName, home.start);
 
   stdin.on("data", (data) => {
     const chunk = onRebuildChunk(data);
 
-    if (isExitCommand(chunk)) {
-      console.log(`\nThank you for using File Manager, ${userName}!`);
-      process.exit();
-    }
+    switch (true) {
+      case isExitCommand(chunk):
+        exitCommand(userName);
+        break;
+      case isLsCommand(chunk):
+        getFiles(home.start);
+        break;
+      case isUpCommand(chunk):
+        const upped = upPath(home.start);
+        if (upped) {
+          home.start = upped;
+        }
+        console.log(` ✶ ✷ ✸ You are currently in ${home.start} ✶ ✷ ✸`);
+        break;
+      case isCdCommand(chunk):
+        if (cdPath(home.start, chunk)) {
+          home.start = cdPath(home.start, chunk);
+        }
+        console.log(` ✶ ✷ ✸ You are currently in ${home.start} ✶ ✷ ✸`);
+        break;
 
-    if (isLsCommand(chunk)) {
-      getFiles(home.start);
-    }
+      case isCatCommand(chunk):
+        catFile(home.start, chunk);
+        break;
+      case isAddCommand(chunk):
+        addFile(home.start, chunk);
+        break;
+      case isRenameCommand(chunk):
+        renameFile(home.start, chunk);
+        break;
+      case isCopyCommand(chunk):
+        copyFile(home.start, chunk);
+        break;
+      case isDeleteCommand(chunk):
+        deleteFileCommand(home.start, chunk);
+        break;
+      case isMoveCommand(chunk):
+        moveFile(home.start, chunk);
+        break;
 
-    if (isUpCommand(chunk)) {
-      const upped = upPath(home.start);
-      if (upped) {
-        home.start = upped;
-      }
-      console.log(` ✶ ✷ ✸ You are currently in ${home.start} ✶ ✷ ✸`);
-    }
+      case isEolCommand(chunk):
+        osEOL(home.start);
+        break;
+      case isCPUSCommand(chunk):
+        osCPUS(home.start);
+        break;
+      case isHomeDirCommand(chunk):
+        osHOMEDIR(home.start);
+        break;
+      case isUserNameCommand(chunk):
+        osUserName(home.start);
+        break;
 
-    if (isCdCommand(chunk)) {
-      if (cdPath(home.start, chunk)) {
-        home.start = cdPath(home.start, chunk);
-      }
-      console.log(` ✶ ✷ ✸ You are currently in ${home.start} ✶ ✷ ✸`);
-    }
+      case isArchitectureCommand(chunk):
+        osArchitecture(home.start);
+        break;
 
-    if (isCatCommand(chunk)) {
-      catFile(home.start, chunk);
-    }
+      case isHashCommand(chunk):
+        calculateHash(home.start, chunk);
+        break;
 
-    if (isAddCommand(chunk)) {
-      addFile(home.start, chunk);
-    }
-
-    if (isRenameCommand(chunk)) {
-      renameFile(home.start, chunk);
-    }
-
-    if (isCopyCommand(chunk)) {
-      copyFile(home.start, chunk);
-    }
-
-    if (isDeleteCommand(chunk)) {
-      deleteFileCommand(home.start, chunk);
-    }
-
-    if (isMoveCommand(chunk)) {
-      moveFile(home.start, chunk);
-    }
-
-    if (isEolCommand(chunk)) {
-      osEOL(home.start);
-    }
-    if (isCPUSCommand(chunk)) {
-      osCPUS(home.start);
-    }
-
-    if (isHomeDirCommand(chunk)) {
-      osHOMEDIR(home.start);
-    }
-
-    if (isUserNameCommand(chunk)) {
-      osUserName(home.start);
-    }
-
-    if (isArchitectureCommand(chunk)) {
-      osArchitecture(home.start);
-    }
-
-    if (isHashCommand(chunk)) {
-      calculateHash(home.start, chunk);
-    }
-    if (isCompressCommand(chunk)) {
-      compressFile(home.start, chunk);
-    }
-    if (isDecompressCommand(chunk)) {
-      decompressFile(home.start, chunk);
-    } else {
-      console.log("Invalid input");
+      case isCompressCommand(chunk):
+        compressFile(home.start, chunk);
+        break;
+      case isDecompressCommand(chunk):
+        decompressFile(home.start, chunk);
+        break;
+      default:
+        console.log("Invalid input");
     }
   });
 
-  process.on("SIGINT", function () {
-    console.log(`\nThank you for using File Manager, ${userName}!`);
-    process.exit(1);
-  });
+  process.on("SIGINT", () => exitCommand(userName));
 };
 
 init();

@@ -15,15 +15,10 @@ export const catFile = async (dir, chunk) => {
       stream.on("readable", async () => {
         const data = await stream.read();
         if (data) {
-          console.log(
-            "ᚕ ᚖ ᚠ ᚡ ᚢ ᚣ ᚤ ᚥ ᚦ ᚧ ᚨ ᚩ ᚪ ᚫ ᚬ ᚭ ᚮ ᚯ ᚰ ᚱ ᚲ ᚳ ᚴ ᚵ ᚶ ᚷ ᚸ ᚹ ᚺ ᚻ ᚼ ᚽ ᚾ ᚿ"
-          );
           console.log("________________________________________");
+          console.log(" ");
           console.log(data.toString());
           console.log("________________________________________");
-          console.log(
-            "ᛃ ᛄ ᛅ ᛆ ᛇ ᛈ ᛉ ᛊ ᛋ ᛏ ᛑ ᛒ ᛓ ᛔ ᛕ ᛖ ᛗ ᛘ ᛚ ᛛ ᛜ ᛝ ᛞ ᛟ ᛠ ᛡ ᛢ ᛣ ᛤ ᛥ ᛦ"
-          );
           console.log(` ✶ ✷ ✸ ✶ ✷ ✸ You are currently in ${dir} ✶ ✷ ✸ ✶ ✷ ✸`);
         }
       });
@@ -55,7 +50,6 @@ export const addFile = async (dir, chunk) => {
     writeStream.end();
   } catch (error) {
     console.log("Operation failed");
-    throw error;
   }
 };
 
@@ -75,13 +69,15 @@ export const renameFile = async (dir, chunk) => {
         stream.destroy();
         deleteFile(oldFile);
       });
+      console.log(`Well, file ${oldFile} was renamed to ${newFile}`);
+      console.log(` ✶ ✷ ✸ You are currently in ${dir} ✶ ✷ ✸`);
     } else {
       console.log(
         "Operation failed. You can get file name from ls command list. Relative path. Path for destination - absolute  Ex: /Users/artemstatuta/Desktop/Work/ NODE_BASIC_RS/File-Manager/"
       );
     }
   } catch (error) {
-    throw error;
+    console.log(error, "Operation failed");
   }
 };
 
@@ -101,18 +97,16 @@ export const copyFile = async (dir, chunk) => {
   } else {
     res = newFile;
   }
-  const isExsistsNew = fs.existsSync(res);
-  if (isExists && isExsistsNew) {
+
+  if (isExists) {
     fs.copyFile(
       oldFile,
       `${res.substring(0, res.length - 1)}/${updatedChunk[0]}`,
       (err) => {
         if (err) throw err;
-        console.log(
-          "Operation failed. You can get file name from ls command list. Relative path. Path for destination - absolute  Ex: /Users/artemstatuta/Desktop/Work/ NODE_BASIC_RS/File-Manager/"
-        );
       }
     );
+    console.log("Successfully. The file was copied");
   } else {
     console.log(
       "Operation failed. You can get file name from ls command list. Relative path. Path for destination - absolute  Ex: /Users/artemstatuta/Desktop/Work/ NODE_BASIC_RS/File-Manager/"
@@ -127,6 +121,7 @@ export const deleteFileCommand = async (dir, chunk) => {
   const isExists = fs.existsSync(newPath);
   if (isExists) {
     fs.unlink(newPath, (err) => {
+      console.log(`The file ${newPath} was delited`);
       if (err) {
         console.error(err);
         return;
